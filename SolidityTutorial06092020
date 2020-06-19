@@ -1,0 +1,39 @@
+pragma solidity ^0.4.24;
+
+contract MyContract {
+    string value;
+    
+    constructor() public {
+        value = "myValue";
+    }
+    
+    function get () public view returns (string) {
+        return value;
+    }
+    
+    function set(string _value) public {
+        value = _value;
+    }
+}
+
+contract StringGetStoreSetStore {
+    string store = "abcdef";
+    
+    function getStore() public view returns (string) {
+            return store;
+    }
+    
+    function setStore(string _value) public {
+        store = _value;
+    }
+    
+    function createString() public pure returns (string) {
+        string memory newString = new string(3);
+        bytes memory byteString = byest(newString);
+        byteString[0] = "A";
+        byteString[1] = "b";
+        byteString[2] = "c";
+        
+        return string(byteString);
+    }
+}
