@@ -1,0 +1,32 @@
+pragma solidity 0.5.1;
+
+//Beginning of 2 smart contract interaction
+//utilizing an ERC20Token
+contract ERC20Token {
+    string public name;
+    mapping(address => uint256) public balances;
+    
+    constructor(string memory _name) public {
+        name = _name;
+    }
+    
+    function mint() public {
+        balances[tx.origin] ++;
+    }
+}
+
+//MyToken inherits from ERC20Token
+contract Mytoken is ERC20Token {
+    string public symbol;
+    address[] public owners;
+    uint256 ownerCount;
+    
+    constructor(string memory _name, string memory _symbol) ERC20Token(_name) public {
+    }
+    
+    function mint() public {
+        super.mint();
+        ownerCount ++;
+        owners.push(msg.sender);
+    }
+}
