@@ -1,0 +1,54 @@
+pragma solidity ^0.5.0;
+
+contract Escrow {
+    address agent;
+    
+    mapping(address => uint256) public deposits;
+    
+    modifier onlyAgent() {
+        require(msg.sender == agent);
+        _;
+        //require throws an exception if false and proceeds
+        //if the perenthesis is true
+    }
+    
+    constructor() public{
+        agent = msg.sender;
+    }
+    
+    function deposit(address payee) public onlyAgent payable {
+        uint256 amount = msg.value;
+        deposits[payee] = deposits[payee] + amount;
+        //if doing math, always use "safe" library instead of built in solidity math
+        //this protects against odd math errors
+    }
+    
+    function withdraw(address payable payee) public onlyAgent {
+        uint256 payment = deposits[payee];
+        deposits[payee] = 0;
+        payee.transfer(payment);
+    }
+}
+
+
+contract Timelock {
+    //Who can withdraw?
+    //How much can be withdrawn?
+    //When can it be withdrawn?
+    
+    address payable beneficiary;
+    uint256 releaseTime;
+   
+   
+    
+    constructor(address payable _beneficiary, uint256 _releaseTime) public {
+        require(_releaseTime > block.timestamp);
+        beneficiary = _beneficiary;
+        releaseTime = _releaseTime;
+    }
+    
+    function release() public {
+        address(beneficiary).transfer(address(this).balance);
+    }
+    
+}
