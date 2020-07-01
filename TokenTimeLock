@@ -1,0 +1,31 @@
+pragma solidity ^0.5.1;
+
+import "./Token.sol";
+
+
+//Token timelocks are also known as "vesting"
+contract TokenTimeLock {
+    Token public token;
+    address public beneficiary;
+    uint256 public releaseTime;
+    //We have: The token, the person to recieve them, and the timelock for it
+    //solidity requires a data type to be declared before the variable, so in this case capital Token
+    //declares the token data type, and is followed by the public vairable token from our imported
+    //solidity file
+    
+    constructor(Token _token, address _beneficiary, uint256 _releaseTime) public {
+        require(_releaseTime > block.timestamp);
+        token = _token;
+        beneficiary = _beneficiary;
+        releaseTime = _releaseTime;
+    }
+    
+    function release() public {
+        require(block.timestamp >= releaseTime);
+        uint256 amount = token.balanceOf(address(this));
+        require(amount > 0);
+        token.transfer(beneficiary, amount);
+        //want to ensure through require that tokens are properly vested
+        //and that this only works when the token amount is greater than 0
+    }
+}
